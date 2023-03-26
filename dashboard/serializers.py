@@ -4,4 +4,4 @@ from dashboard.models import Data
 class DataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Data
-        fields = ('d_id', 'stream_id', 'title', 'text')
+        fields = ('d_id', 'stream_id', 'date', 'title', 'text')

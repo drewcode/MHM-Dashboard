@@ -6,6 +6,7 @@ class Data(models.Model):
 
 	d_id = models.CharField(max_length = 20,  default = '')
 	stream_id = models.CharField(max_length = 30, default = '') #models.IntegerField(default = 0)    
+	date = models.CharField(max_length = 5, default = '')
 	title = models.CharField(max_length = 50, default = '')
 	text = models.CharField(max_length = 200, default = '')
 

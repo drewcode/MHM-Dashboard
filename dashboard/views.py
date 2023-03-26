@@ -21,12 +21,15 @@ def data_list(request):
 	        	q |= Q(title__icontains=title)
         	else:
 	        	q |= Q(title__exact=title)
-        elif stream_id := request.GET.get('stream_id', None):
+        if stream_id := request.GET.get('stream_id', None):
         	if request.GET.get('get_all', None) == 'True':
 	        	q |= Q(stream_id__icontains=stream_id)
         	else:
         		q |= Q(stream_id__exact=stream_id)
-        if title or stream_id is not None:
+        if date := request.GET.get('date', None):
+            q |= Q(date__exact=date)
+            
+        if title or stream_id or date is not None:
             all_data = all_data.filter(q)
         data_serialized = DataSerializer(all_data, many=True)
         return JsonResponse(data_serialized.data, safe=False)
