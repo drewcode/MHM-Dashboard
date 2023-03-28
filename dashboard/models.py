@@ -11,4 +11,4 @@ class Data(models.Model):
 	text = models.CharField(max_length = 200, default = '')
 
 	def __str__(self):
-		return self.data_id
+		return self.d_id

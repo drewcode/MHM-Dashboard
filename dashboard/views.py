@@ -9,26 +9,31 @@ from rest_framework import status
 from dashboard.models import Data
 from dashboard.serializers import DataSerializer
 
+import json
 
 @api_view(['GET', 'POST', 'DELETE'])
 def data_list(request):
     # GET list of all data
     if request.method == 'GET':
         all_data = Data.objects.all()
+        if d_id := request.GET.get('d_id', None):
+            all_data = all_data.filter(d_id__exact=d_id)
+            # q &= Q(d_id__exact=d_id)
         q = Q()
         if title := request.GET.get('title', None):
         	if request.GET.get('get_all', None) == 'True':
-	        	q |= Q(title__icontains=title)
+	        	q &= Q(title__icontains=title)
         	else:
-	        	q |= Q(title__exact=title)
+	        	q &= Q(title__exact=title)
         if stream_id := request.GET.get('stream_id', None):
         	if request.GET.get('get_all', None) == 'True':
-	        	q |= Q(stream_id__icontains=stream_id)
+	        	q &= Q(stream_id__icontains=stream_id)
         	else:
-        		q |= Q(stream_id__exact=stream_id)
+        		q &= Q(stream_id__exact=stream_id)
+
         if date := request.GET.get('date', None):
-            q |= Q(date__exact=date)
-            
+            q &= Q(date__exact=date)
+
         if title or stream_id or date is not None:
             all_data = all_data.filter(q)
         data_serialized = DataSerializer(all_data, many=True)
@@ -46,6 +51,20 @@ def data_list(request):
     # elif request.method == 'DELETE':
     #     count = Data.objects.all().delete()
     #     return JsonResponse({'message': '{} All data was deleted successfully!'.format(count[0])}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+@api_view(['GET'])
+def patient_day_data(request, d_id, date):
+    patient_data = Data.objects.filter(d_id__exact=d_id, date__exact=date)
+    patient_data_serialized = DataSerializer(patient_data, many=True)
+
+    new_json_o = {}
+    for o_dict in patient_data_serialized.data:
+        new_json_o[o_dict['title']] = o_dict['text']
+    print(new_json_o)
+    return JsonResponse(new_json_o, safe=False)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
