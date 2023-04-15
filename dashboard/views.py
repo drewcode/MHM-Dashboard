@@ -17,7 +17,7 @@ def data_list(request):
     if request.method == 'GET':
         all_data = Data.objects.all()
         if d_id := request.GET.get('d_id', None):
-            all_data = all_data.filter(d_id__exact=d_id)
+            all_data = all_data.filter(d_id__startswith=d_id)
             # q &= Q(d_id__exact=d_id)
         q = Q()
         if title := request.GET.get('title', None):
