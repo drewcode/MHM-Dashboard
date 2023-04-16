@@ -60,6 +60,8 @@ def patient_day_data(request, d_id, date):
     patient_data = Data.objects.filter(d_id__exact=d_id, date__exact=date)
     patient_data_serialized = DataSerializer(patient_data, many=True)
 
+    # add a dictionary and index based on d_id, each entry can have an additional _1/_2 appended to it
+    # Then send back mulitple jsons for mulitple entries of each day
     new_json_o = {}
     for o_dict in patient_data_serialized.data:
         new_json_o[o_dict['title']] = o_dict['text']
@@ -67,6 +69,8 @@ def patient_day_data(request, d_id, date):
     return JsonResponse(new_json_o, safe=False)
 
 
+
+# Not used currently
 @api_view(['GET', 'PUT', 'DELETE'])
 def data_detail(request, pk):
     # find data by primary key - id
